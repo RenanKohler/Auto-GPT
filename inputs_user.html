@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Command Interface</title>
+    <script>
+        const commands = [
+            { label: "Google Search", name: "google", args: { input: "<search>" } },
+            { label: "Browse Website", name: "browse_website", args: { url: "<url>", question: "<what_you_want_to_find_on_website>" } },
+            { label: "Start GPT Agent", name: "start_agent", args: { name: "<name>", task: "<short_task_desc>", prompt: "<prompt>" } },
+            { label: "Message GPT Agent", name: "message_agent", args: { key: "<key>", message: "<message>" } },
+            { label: "List GPT Agents", name: "list_agents", args: {} },
+            { label: "Delete GPT Agent", name: "delete_agent", args: { key: "<key>" } },
+            { label: "Clone Repository", name: "clone_repository", args: { repository_url: "<url>", clone_path: "<directory>" } },
+            { label: "Write to file", name: "write_to_file", args: { file: "<file>", text: "<text>" } },
+            { label: "Read file", name: "read_file", args: { file: "<file>" } },
+            { label: "Append to file", name: "append_to_file", args: { file: "<file>", text: "<text>" } },
+            { label: "Delete file", name: "delete_file", args: { file: "<file>" } },
+            { label: "Search Files", name: "search_files", args: { directory: "<directory>" } },
+            { label: "Evaluate Code", name: "evaluate_code", args: { code: "<full_code_string>" } },
+            { label: "Get Improved Code", name: "improve_code", args: { suggestions: "<list_of_suggestions>", code: "<full_code_string>" } },
+            { label: "Write Tests", name: "write_tests", args: { code: "<full_code_string>", focus: "<list_of_focus_areas>" } },
+            { label: "Execute Python File", name: "execute_python_file", args: { file: "<file>" } },
+            { label: "Generate Image", name: "generate_image", args: { prompt: "<prompt>" } },
+            { label: "Do Nothing", name: "do_nothing", args: {} },
+            { label: "Task Complete (Shutdown)", name: "task_complete", args: { reason: "<reason>" } },
+        ];
+
+
+        function onCommandChange() {
+            const commandSelect = document.getElementById("command-select");
+            const selectedCommand = commands[commandSelect.selectedIndex];
+            const formContainer = document.getElementById("form-container");
+
+            formContainer.innerHTML = '';
+
+            for (const argName in selectedCommand.args) {
+                const inputLabel = document.createElement("label");
+                inputLabel.innerText = argName;
+                formContainer.appendChild(inputLabel);
+
+                const inputField = document.createElement("input");
+                inputField.name = argName;
+                inputField.type = "text";
+                inputField.placeholder = selectedCommand.args[argName];
+                formContainer.appendChild(inputField);
+
+                const lineBreak = document.createElement("br");
+                formContainer.appendChild(lineBreak);
+            }
+        }
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement("textarea");
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+        }
+
+        function formatData(e) {
+            e.preventDefault();
+            const commandSelect = document.getElementById("command-select");
+            const selectedCommand = commands[commandSelect.selectedIndex];
+            const commandArgs = {};
+            const name = selectedCommand.label
+            for (const argName in selectedCommand.args) {
+                const inputField = document.querySelector(`input[name="${argName}"]`);
+                commandArgs[argName] = inputField.value;
+            }
+
+            const formattedCommand = {
+                [selectedCommand.label]: selectedCommand.name.concat(','),
+                args: commandArgs,
+            };
+
+            // Converting the formattedCommand object to a JSON string for copying
+            const formattedCommandJSON = JSON.stringify(formattedCommand)
+
+            const retorno = `COMMAND: ${formattedCommandJSON.substring(1, formattedCommandJSON.length - 1)} `
+
+            // alert(retorno)
+            // Copy the formatted command to the clipboard
+            copyToClipboard(retorno);
+
+
+        }
+
+
+        // function formatData(e) {
+        //     e.preventDefault();
+        //     const commandSelect = document.getElementById("command-select");
+        //     const selectedCommand = commands[commandSelect.selectedIndex];
+        //     const commandArgs = {};
+
+        //     for (const argName in selectedCommand.args) {
+        //         const inputField = document.querySelector(`input[name="${argName}"]`);
+        //         commandArgs[argName] = inputField.value;
+        //     }
+
+        //     const formattedCommand = {
+        //         name: selectedCommand.name,
+        //         args: commandArgs,
+        //     };
+
+        //     console.log(formattedCommand);
+        // }
+    </script>
+</head>
+
+<body>
+    <h1>AI Command Interface</h1>
+    <form onsubmit="formatData(event)">
+        <label for="command-select">Choose a command:</label>
+        <select id="command-select" onchange="onCommandChange()">
+            <script>
+                commands.forEach((command, index) => {
+                    const option = document.createElement("option");
+                    option.value = index;
+                    option.innerText = command.label;
+                    document.getElementById("command-select").appendChild(option);
+                });
+            </script>
+        </select>
+        <div id="form-container"></div>
+        <button type="submit">Format command data</button>
+    </form>
+</body>
+
+</html>
