@@ -21,6 +21,10 @@ log-ingestion.txt
 logs
 *.log
 *.mp3
+ingest_data.bat
+.gitignore
+run.bat
+run.sh
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -157,3 +161,7 @@ vicuna-*
 
 # mac
 .DS_Store
+ingest_data.bat
+.gitignore
+run.bat
+run.sh
