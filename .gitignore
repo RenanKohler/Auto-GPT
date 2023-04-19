@@ -161,7 +161,6 @@ vicuna-*
 
 # mac
 .DS_Store
-ingest_data.bat
-.gitignore
-run.bat
-run.sh
+
+# news
+CURRENT_BULLETIN.md
